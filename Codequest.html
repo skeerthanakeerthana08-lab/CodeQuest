@@ -1,0 +1,459 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeQuest | DS Quiz</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  min-height: 100vh;
+  padding: 20px 14px;
+}
+
+.container {
+  max-width: 520px;
+  margin: 25px auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logo {
+  font-size: 42px;
+}
+
+h1 {
+  font-size: 32px;
+  color: #67e8f9;
+  margin: 8px 0;
+}
+
+.subtitle {
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: #243247;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.stat-label {
+  color: #cbd5e1;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 21px;
+  font-weight: bold;
+}
+
+.card {
+  background: white;
+  color: #172554;
+  padding: 23px;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px #0003;
+}
+
+.tag {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-size: 22px;
+  line-height: 1.4;
+  margin-bottom: 22px;
+}
+
+.option {
+  width: 100%;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 11px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+  color: #172554;
+  cursor: pointer;
+  background: #e0f2fe;
+}
+
+.option:nth-of-type(2) {
+  background: #d1fae5;
+}
+
+.option:nth-of-type(3) {
+  background: #f3e8ff;
+}
+
+.option:nth-of-type(4) {
+  background: #ffedd5;
+}
+
+.option:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.option.correct {
+  border-color: #16a34a;
+  background: #bbf7d0;
+}
+
+.option.wrong {
+  border-color: #dc2626;
+  background: #fecaca;
+}
+
+button:focus-visible {
+  outline: 3px solid #67e8f9;
+  outline-offset: 3px;
+}
+
+.primary {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 12px;
+  font-size: 17px;
+  font-weight: bold;
+  background: #06b6d4;
+  color: #082f49;
+  cursor: pointer;
+}
+
+.primary:active {
+  transform: scale(0.98);
+}
+
+.feedback {
+  min-height: 26px;
+  margin-top: 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.progress-track {
+  height: 7px;
+  background: #334155;
+  border-radius: 10px;
+  margin: 14px 0 20px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  width: 0;
+  background: #67e8f9;
+  transition: width 0.3s;
+}
+
+.center {
+  text-align: center;
+}
+
+.result-score {
+  font-size: 52px;
+  color: #0891b2;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.small-text {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+footer {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+  margin-top: 22px;
+}
+
+@media (max-width: 360px) {
+  h1 { font-size: 27px; }
+  .card { padding: 17px; }
+  h2 { font-size: 20px; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">🚀</div>
+    <h1>CodeQuest</h1>
+    <p class="subtitle">Learn Data Structures. Challenge Yourself.</p>
+  </header>
+
+  <section id="home" class="card center">
+    <div style="font-size:50px">🧠</div>
+    <h2>Ready for the Challenge?</h2>
+    <p class="small-text">
+      Test your knowledge of Arrays, Stacks, Queues,
+      Trees and more.
+    </p>
+    <button class="primary" onclick="startQuiz()">
+      🚀 Start Quiz
+    </button>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="stats">
+      <div>
+        <div class="stat-label">QUESTION</div>
+        <div class="stat-value" id="questionCount">1 / 10</div>
+      </div>
+      <div>
+        <div class="stat-label">YOUR SCORE</div>
+        <div class="stat-value" id="score">🏆 0</div>
+      </div>
+    </div>
+
+    <div class="progress-track">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="card">
+      <div class="tag" id="questionTag">QUESTION 01</div>
+      <h2 id="questionText"></h2>
+      <div id="options"></div>
+      <p class="feedback" id="feedback" aria-live="polite">
+        Select one answer to continue.
+      </p>
+      <button class="primary hidden" id="nextBtn"
+        onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </section>
+
+  <section id="result" class="card center hidden">
+    <div style="font-size:52px">🏆</div>
+    <h2 id="resultTitle">Quiz Completed!</h2>
+    <p class="small-text">Your final score</p>
+    <div class="result-score" id="finalScore">0 / 10</div>
+    <p class="small-text" id="resultMessage"></p>
+    <button class="primary" onclick="startQuiz()">
+      🔄 Play Again
+    </button>
+    <button class="primary" onclick="goHome()"
+      style="background:#e2e8f0;color:#172554">
+      🏠 Home
+    </button>
+  </section>
+
+  <footer>Made with 💙 for Data Structures learners</footer>
+</div>
+
+<script>
+const questions = [
+  {
+    question: "Which data structure follows LIFO?",
+    options: ["Array", "Stack", "Queue", "Tree"],
+    answer: 1,
+    explanation: "Stack follows Last In, First Out (LIFO)."
+  },
+  {
+    question: "Which data structure follows FIFO?",
+    options: ["Stack", "Tree", "Queue", "Graph"],
+    answer: 2,
+    explanation: "Queue follows First In, First Out (FIFO)."
+  },
+  {
+    question: "Which structure stores elements using index positions?",
+    options: ["Array", "Queue", "Tree", "Graph"],
+    answer: 0,
+    explanation: "Array elements can be accessed using indices."
+  },
+  {
+    question: "Which data structure has a root and child nodes?",
+    options: ["Stack", "Array", "Queue", "Tree"],
+    answer: 3,
+    explanation: "A tree is organized using nodes and parent-child links."
+  },
+  {
+    question: "Which data structure is commonly used for function calls?",
+    options: ["Queue", "Stack", "Array", "Graph"],
+    answer: 1,
+    explanation: "Function calls are managed using a call stack."
+  },
+  {
+    question: "Which structure is commonly used in BFS traversal?",
+    options: ["Stack", "Tree only", "Queue", "Array only"],
+    answer: 2,
+    explanation: "Breadth-First Search commonly uses a queue."
+  },
+  {
+    question: "Which data structure consists of nodes and edges?",
+    options: ["Graph", "Stack", "Queue", "Array"],
+    answer: 0,
+    explanation: "A graph consists of vertices (nodes) and edges."
+  },
+  {
+    question: "Which operation adds an item to a stack?",
+    options: ["Dequeue", "Remove", "Search", "Push"],
+    answer: 3,
+    explanation: "Push adds an item to the top of a stack."
+  },
+  {
+    question: "Which operation removes an item from a queue?",
+    options: ["Push", "Dequeue", "Insert", "Traverse"],
+    answer: 1,
+    explanation: "Dequeue removes an item from the front of a queue."
+  },
+  {
+    question: "Which data structure is useful for undo operations?",
+    options: ["Graph", "Queue", "Stack", "Tree"],
+    answer: 2,
+    explanation: "A stack can track actions for undo operations."
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function showSection(sectionId) {
+  ["home", "quiz", "result"].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+  document.getElementById(sectionId).classList.remove("hidden");
+}
+
+function startQuiz() {
+  currentQuestion = 0;
+  score = 0;
+  showSection("quiz");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[currentQuestion];
+
+  document.getElementById("questionCount").textContent =
+    `${currentQuestion + 1} / ${questions.length}`;
+  document.getElementById("score").textContent = `🏆 ${score}`;
+  document.getElementById("questionTag").textContent =
+    `QUESTION ${String(currentQuestion + 1).padStart(2, "0")}`;
+  document.getElementById("questionText").textContent = q.question;
+  document.getElementById("progress").style.width =
+    `${(currentQuestion / questions.length) * 100}%`;
+  document.getElementById("feedback").textContent =
+    "Select one answer to continue.";
+  document.getElementById("feedback").style.color = "#64748b";
+  document.getElementById("nextBtn").classList.add("hidden");
+
+  const optionsBox = document.getElementById("options");
+  optionsBox.replaceChildren();
+
+  q.options.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+    button.addEventListener("click", () => selectAnswer(index));
+    optionsBox.appendChild(button);
+  });
+}
+
+function selectAnswer(selectedIndex) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentQuestion];
+  const buttons = document.querySelectorAll("#options .option");
+  buttons.forEach(button => button.disabled = true);
+
+  if (selectedIndex === q.answer) {
+    score++;
+    buttons[selectedIndex].classList.add("correct");
+    document.getElementById("feedback").textContent =
+      "✅ Correct! " + q.explanation;
+    document.getElementById("feedback").style.color = "#15803d";
+  } else {
+    buttons[selectedIndex].classList.add("wrong");
+    buttons[q.answer].classList.add("correct");
+    document.getElementById("feedback").textContent =
+      "❌ Not quite. " + q.explanation;
+    document.getElementById("feedback").style.color = "#b91c1c";
+  }
+
+  document.getElementById("score").textContent = `🏆 ${score}`;
+  document.getElementById("progress").style.width =
+    `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+  const nextBtn = document.getElementById("nextBtn");
+  nextBtn.textContent = currentQuestion === questions.length - 1
+    ? "View Results 🏆" : "Next Question →";
+  nextBtn.classList.remove("hidden");
+}
+
+function nextQuestion() {
+  if (!answered) return;
+
+  currentQuestion++;
+  if (currentQuestion < questions.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  showSection("result");
+  document.getElementById("finalScore").textContent =
+    `${score} / ${questions.length}`;
+
+  const percentage = Math.round(score / questions.length * 100);
+  let message;
+
+  if (percentage >= 80) {
+    message = "Excellent work! You know your data structures well.";
+  } else if (percentage >= 50) {
+    message = "Good effort! Keep practising to improve your score.";
+  } else {
+    message = "Keep learning! Try again and improve your score.";
+  }
+
+  document.getElementById("resultMessage").textContent =
+    `${percentage}% — ${message}`;
+  document.getElementById("progress").style.width = "100%";
+}
+
+function goHome() {
+  showSection("home");
+}
+</script>
+</body>
+</html>
